@@ -2,7 +2,7 @@ version: '3.7'
 services:
 ## Hume Core Services
   neo4j:
-    image: neo4j:4.1.4-enterprise
+    image: neo4j:4.2.5-enterprise
     ports:
       - "${NEO4J_HTTP_PORT:-7474}:7474"
       - "${NEO4J_BOLT_PORT:-7687}:7687"
@@ -11,7 +11,7 @@ services:
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
       - NEO4J_dbms_memory_heap_maxSize=4G
       - NEO4J_dbms_connector_bolt_advertised__address=${HUME_ADVERTISED_ADDRESS:-localhost}:${NEO4J_PORT:-7687}
-      - NEO4JLABS_PLUGINS=["apoc"]
+      - NEO4JLABS_PLUGINS=["apoc","graph-data-science"]
     volumes:
       - "hume_neo4j_data:/data"
       - "hume_neo4j_plugins:/plugins"
@@ -46,7 +46,7 @@ services:
       - HUME_BLOBSTORE_ADAPTER_S3_HOST=http://blobstore:9000
       - HUME_BLOBSTORE_CONTAINER=hume-bucket
   web:
-    image: docker.graphaware.com/internal/hume-web:develop
+    image: docker.graphaware.com/public/hume-web:${HUME_VERSION}
     environment:
       - HUME_API_URL=http://${HUME_ADVERTISED_ADDRESS:-localhost}:${HUME_API_PORT:-8080}
     ports:
@@ -82,7 +82,7 @@ services:
     ports:
       - 8086:8086
   tikapdf:
-    image: docker.graphaware.com/internal/hume-tika-pdf:${HUME_VERSION}
+    image: docker.graphaware.com/public/hume-tika-pdf:${HUME_VERSION}
     ports:
       - "8089:8089"
 volumes:
